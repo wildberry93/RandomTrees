@@ -1,0 +1,7 @@
+okragly	czerwony	8
+okragly	czarny	12
+kwadratowy	zielony	5
+trojkatny	zielony	14
+trojkatny	czerwony	7
+rombowy	pupruprowy	5
+rombowy	zielony	17
