@@ -1,52 +1,63 @@
-#!/usr/bin/python
-
 import gini
 
+
 class Node:
-    def __init__(self, val, samples):
-        self.left = None
-        self.right = None
-        self.value = val
-        self.samples = samples
-
-class Tree:
-    def __init__(self):
-        self.root = None
-
-    def add(self, val, samples_true, samples_false):
-        if(self.root is None):
-            self.root = Node(val, samples_true) #zmienic, zeby root mial wszystkie samples
-        else:
-            self._add(val, self.root, samples_true, samples_false)
-
-    def _add(self, val, node, samples_true, samples_false):
-        """
-        Add new nodes: left and right
-        """
+    def __init__(self, results=None, value=None,tb=None,fb=None):
+        self.value=value # vlaue necessary to get a true result
+        self.results=results # dict of results for a branch, None for everything except endpoints
+        self.tb=tb # true decision nodes 
+        self.fb=fb # false decision nodes
         
-        if(node.left is not None):
-            self._add(val, node.left, samples_true, samples_false)
-        else:
-            print "jestem nonw"
-            print val
-            node.left = Node(val, samples_true)
-            
-        if(node.right is not None):
-            self._add(val, node.right, samples_true, samples_false)
-        else:
-            node.right = Node(val, samples_false)
+def divideset(rows,column,value,y):
+    split_function=None
+    if isinstance(value,int) or isinstance(value,float):
+        split_function=lambda row:row[column]>=value
+    else:
+        split_function=lambda row:row[column]==value
+   
+   # Divide the X into two sets and return them
+    set1 = [row for row in rows if split_function(row)] # if split_function(row)
+    y1 = [y[id] for id,row in enumerate(rows) if split_function(row)]
+    set2 = [row for row in rows if not split_function(row)]
+    y2 = [y[id] for id,row in enumerate(rows) if not split_function(row)]
 
-    def printTree(self):
-        if(self.root is not None):
-            self._printTree(self.root)
+    return (set1,set2,y1,y2)
 
-    def _printTree(self, node):
-        if(node is not None):
-            self._printTree(node.left)
-            if node.left is not None and node.right is not None:
-                print str(node.left.samples) + ' ' + str(node.right.samples)
-            self._printTree(node.right)
+def uniquecounts(rows, y):
+    results={}
+    cnt=0
+    for row in rows:
+        r=y[cnt]
+        cnt+=1
+        if r not in results: results[r]=0
+        results[r]+=1
+       
+    return results  
+    
+def buildtree(X, y):
+    if len(X) == 0: return Node()
+    #print X
+    gini_tup = gini.gini(X,y,3)
+    set1, set2, y1, y2 = divideset(X, gini_tup[0],gini_tup[1],y)
+    if gini_tup[2] > 0:
+        trueBranch = buildtree(set1,y1)
+        falseBranch = buildtree(set2,y2)
 
+        return Node(tb=trueBranch, fb=falseBranch, value=gini_tup[1])
+    else:
+        #print uniquecounts(X,y)
+        return Node(results=uniquecounts(X,y))
+        
+def printtree(tree,indent=''):
+    if tree.results is not None:
+        print str(tree.results)
+    elif tree.results is None and tree.value is not None:
+        print 'Column ' + ' : '+str(tree.value)+'? '
+        print indent+'True->', 
+        printtree(tree.tb,indent+'  ')
+        print indent+'False->', 
+        printtree(tree.fb,indent+'  ')
+        
 def read_data():
     tabela = []
     f = open("gini_dane.txt", "r")
@@ -59,46 +70,11 @@ def read_data():
     for j in g:
         y.append(j.strip())
         
-    return tabela, y
-
-def get_samples(index,X,value):
-    line_cnt = 0
-    samples_true = []
-    samples_false = []
-    for line in X:
-        if line[index] == value:
-            samples_true.append(line_cnt)
-        else:
-            samples_false.append(line_cnt)
-        line_cnt+=1
-        
-    return samples_true, samples_false
+    return tabela, y    
     
-def build_tree(X,y):
-    tree = Tree()
-    cnt = 0
-    while True: 
-        
-        if cnt < 5:
-            gini_tup = gini.gini(X,y,3)
-            #print gini_tup
-            samples_true, samples_false = get_samples(gini_tup[0],X,gini_tup[1])
-            #print samples_false
-            tree.add(gini_tup[1],samples_true, samples_false) #
-        else:
-            break
-        
-        cnt+=1
-        
-        tree.printTree()
-        
-    return tree
-            
-
 if __name__ == "__main__":
     X,y = read_data()
-    print y
-    build_tree(X,y)
-    
+    gini_tup = gini.gini(X,y,3)
+    printtree(buildtree(X,y))
     
     
