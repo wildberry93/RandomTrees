@@ -41,7 +41,7 @@ def uniquecounts(rows, y):
        
     return r  
     
-def buildtree(X, y):
+def fit(X, y):
     if len(X) == 0: return Node()
     #print X
 
@@ -56,7 +56,7 @@ def buildtree(X, y):
         #print uniquecounts(X,y)
         return Node(results=uniquecounts(X,y))
         
-def printtree(tree,indent=''):
+'''def printtree(tree,indent=''):
     if tree.results is not None:
         print str(tree.results)
     elif tree.results is None and tree.value is not None:
@@ -64,10 +64,10 @@ def printtree(tree,indent=''):
         print indent+'True->', 
         printtree(tree.tb,indent+'  ')
         print indent+'False->', 
-        printtree(tree.fb,indent+'  ')
+        printtree(tree.fb,indent+'  ')'''
 
 
-def classify(records, trees):
+def predict(records, trees):
     """
     Classify whole dataset.
     """
