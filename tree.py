@@ -2,15 +2,17 @@ import gini
 
 
 class Node:
-    def __init__(self, results=None, value=None,tb=None,fb=None):
+    def __init__(self, results=None, value=None,tb=None,fb=None,index=None):
         self.value=value # vlaue necessary to get a true result
         self.results=results # dict of results for a branch, None for everything except endpoints
         self.tb=tb # true decision nodes 
         self.fb=fb # false decision nodes
+        self.index = index #column index
         
 def divideset(rows,column,value,y):
     split_function=None
-    if isinstance(value,int) or isinstance(value,float):
+    #if isinstance(value,float): print "udalo sie"
+    if isinstance(value,float) or isinstance(value,int):
         print "jestem tutaj num"
         split_function=lambda row:float(row[column])>=float(value)
     else:
@@ -37,7 +39,7 @@ def uniquecounts(rows, y):
         if r not in results: results[r]=0
         results[r]+=1
        
-    return results  
+    return r  
     
 def buildtree(X, y):
     if len(X) == 0: return Node()
@@ -49,7 +51,7 @@ def buildtree(X, y):
         trueBranch = buildtree(set1,y1)
         falseBranch = buildtree(set2,y2)
 
-        return Node(tb=trueBranch, fb=falseBranch, value=gini_tup[1])
+        return Node(tb=trueBranch, fb=falseBranch, value=gini_tup[1], gini_tup[0])
     else:
         #print uniquecounts(X,y)
         return Node(results=uniquecounts(X,y))
@@ -63,15 +65,52 @@ def printtree(tree,indent=''):
         printtree(tree.tb,indent+'  ')
         print indent+'False->', 
         printtree(tree.fb,indent+'  ')
+
+
+def classify(records, trees):
+    """
+    Classify whole dataset.
+    """
+    res_dict = {}
+    for rec_id,record in enumerate(records):
+        for tree in trees:
+            result = get_classification(record,tree) #classify each record on every tree
+            res_dict[rec_id].append(result)
+    
+    return res_dict        
+            
+def get_classification(record, tree):
+    """
+    This function recursively traverses the decision tree and returns a
+    classification for the given record.
+    """
+        
+    if tree.fb is None and tree.tb is None:
+        return tree.results     
+    else:
+        for i in range(0,len(record)):
+            if record[i] == tree.index:
+                if isinstance(record[i], float) or isinstance(record[i], int):
+                    if float(record[i]) >= float(tree.value):
+                        return get_classification(record, tree.tb)
+                    else:
+                        return get_classification(record, tree.fb)
+                else:
+                    if record[i] == tree.value:
+                        return get_classification(record, tree.tb)
+                    else:
+                        return get_classification(record, tree.fb)
+                
+            else: continue
         
 def read_data():
     tabela = []
-    f = open("iris.csv", "r")
+    f = open("gini_dane.txt", "r")
     for i in f:
         tabela.append(i.strip().split("\t"))
     
     y = []
-    g = open("iris_class.txt", "r")
+    g = open("gini_klasyfikacje.txt", "r")
     
     for j in g:
         y.append(j.strip())
