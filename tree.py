@@ -11,14 +11,19 @@ class Node:
 def divideset(rows,column,value,y):
     split_function=None
     if isinstance(value,int) or isinstance(value,float):
-        split_function=lambda row:row[column]>=value
+        print "jestem tutaj num"
+        split_function=lambda row:float(row[column])>=float(value)
     else:
+        print "jestem tutaj nazwa"
         split_function=lambda row:row[column]==value
-   
+    
+    print "value", value
    # Divide the X into two sets and return them
     set1 = [row for row in rows if split_function(row)] # if split_function(row)
+    print "set1", set1
     y1 = [y[id] for id,row in enumerate(rows) if split_function(row)]
     set2 = [row for row in rows if not split_function(row)]
+    print "set2", set2
     y2 = [y[id] for id,row in enumerate(rows) if not split_function(row)]
 
     return (set1,set2,y1,y2)
@@ -37,6 +42,7 @@ def uniquecounts(rows, y):
 def buildtree(X, y):
     if len(X) == 0: return Node()
     #print X
+
     gini_tup = gini.gini(X,y,3)
     set1, set2, y1, y2 = divideset(X, gini_tup[0],gini_tup[1],y)
     if gini_tup[2] > 0:
@@ -60,12 +66,12 @@ def printtree(tree,indent=''):
         
 def read_data():
     tabela = []
-    f = open("gini_dane.txt", "r")
+    f = open("iris.csv", "r")
     for i in f:
         tabela.append(i.strip().split("\t"))
     
     y = []
-    g = open("gini_klasyfikacje.txt", "r")
+    g = open("iris_class.txt", "r")
     
     for j in g:
         y.append(j.strip())
@@ -75,6 +81,6 @@ def read_data():
 if __name__ == "__main__":
     X,y = read_data()
     gini_tup = gini.gini(X,y,3)
-    printtree(buildtree(X,y))
+    buildtree(X,y)
     
     
