@@ -7,7 +7,7 @@ def gini(X, y, n_features):
     # kolejno indeks cechy, wartość oraz wskaźnik Gini impurity. 
 
     if n_features > len(X[0]):
-        raise Exception('Liczba wybranych cech jest większa od liczby cech w zbiorze danych.')
+        raise Exception('Liczba wybranych cech jest wieksza od liczby cech w zbiorze danych.')
 
     selected_features = random.sample(xrange(0, len(X[0])), n_features)  # Losowanie cech
             

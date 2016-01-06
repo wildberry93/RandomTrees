@@ -46,6 +46,8 @@ def fit(X, y):
 
     gini_tup = gini.gini(X,y,3)
     set1, set2, y1, y2 = divideset(X, gini_tup[0],gini_tup[1],y)
+    print "yyyyyyy1",y1
+    print "yyyyyyy2",y2
     if gini_tup[2] > 0:
         trueBranch = fit(set1,y1)
         falseBranch = fit(set2,y2)
@@ -104,12 +106,12 @@ def get_classification(record, tree):
         
 def read_data_to_learn():
     tabela = []
-    f = open("gini_dane.txt", "r")
+    f = open("iris.txt", "r")
     for i in f:
         tabela.append(i.strip().split("\t"))
     
     y = []
-    g = open("gini_klasyfikacje.txt", "r")
+    g = open("iris_class.txt", "r")
     
     for j in g:
         y.append(j.strip())
@@ -142,7 +144,7 @@ def read_data_to_classify():
     
 if __name__ == "__main__":
     X,y = get_random_lines()
-    gini_tup = gini.gini(X,y,3)
+    gini_tup = gini.gini(X,y,2)
     fit(X,y)
     
     
