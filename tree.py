@@ -42,13 +42,11 @@ def uniquecounts(rows, y):
     
 def fit(X, y):
     if len(X) == 0: return Node()
-    #print X
 
     gini_tup = gini.gini(X,y,3)
     set1, set2, y1, y2 = divideset(X, gini_tup[0],gini_tup[1],y)
-    print "yyyyyyy1",y1
-    print "yyyyyyy2",y2
-    if gini_tup[2] > 0:
+
+    if gini_tup[2] > 0 and len(set1) != 0 and len(set2) != 0:
         trueBranch = fit(set1,y1)
         falseBranch = fit(set2,y2)
 
@@ -85,9 +83,10 @@ def get_classification(record, tree):
     This function recursively traverses the decision tree and returns a
     classification for the given record.
     """
-    print "record", record
+    
     if tree.fb is None and tree.tb is None:
         print "skonczylem"
+        print tree.results
         return tree.results           
     else:
         for i in range(0,len(record)):
