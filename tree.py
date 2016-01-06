@@ -1,5 +1,5 @@
 import gini
-
+import random
 
 class Node:
     def __init__(self, results=None, value=None,tb=None,fb=None,index=None):
@@ -11,7 +11,6 @@ class Node:
         
 def divideset(rows,column,value,y):
     split_function=None
-    #if isinstance(value,float): print "udalo sie"
     if isinstance(value,float) or isinstance(value,int):
         print "jestem tutaj num"
         split_function=lambda row:float(row[column])>=float(value)
@@ -48,10 +47,10 @@ def fit(X, y):
     gini_tup = gini.gini(X,y,3)
     set1, set2, y1, y2 = divideset(X, gini_tup[0],gini_tup[1],y)
     if gini_tup[2] > 0:
-        trueBranch = buildtree(set1,y1)
-        falseBranch = buildtree(set2,y2)
+        trueBranch = fit(set1,y1)
+        falseBranch = fit(set2,y2)
 
-        return Node(tb=trueBranch, fb=falseBranch, value=gini_tup[1], gini_tup[0])
+        return Node(tb=trueBranch, fb=falseBranch, value=gini_tup[1], index=gini_tup[0])
     else:
         #print uniquecounts(X,y)
         return Node(results=uniquecounts(X,y))
@@ -103,7 +102,7 @@ def get_classification(record, tree):
                 
             else: continue
         
-def read_data():
+def read_data_to_learn():
     tabela = []
     f = open("gini_dane.txt", "r")
     for i in f:
@@ -115,11 +114,35 @@ def read_data():
     for j in g:
         y.append(j.strip())
         
-    return tabela, y    
+    return tabela, y  
+
+def get_random_lines():
+    """
+    Draws random lines to from dataset to build single tree.
+    The number of lines must be equal to the number of lines in the input dataset.
+    Returns X and y.
+    """
+    
+    start_X, start_y = read_data_to_learn()
+    numb_lines = len(start_y)
+    print numb_lines
+    
+    new_X = []
+    new_y = []
+    
+    for i in range(0,numb_lines):
+        new_id = random.randint(0,numb_lines-1)
+        new_X.append(start_X[new_id])
+        new_y.append(start_y[new_id])
+    
+    return new_X, new_y
+    
+def read_data_to_classify():
+        pass
     
 if __name__ == "__main__":
-    X,y = read_data()
+    X,y = get_random_lines()
     gini_tup = gini.gini(X,y,3)
-    buildtree(X,y)
+    fit(X,y)
     
     
