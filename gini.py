@@ -17,10 +17,12 @@ def gini(X, y, n_features):
         values = set()
         for wiersz in X:
             value = wiersz[feature]
-            if isinstance(value, float) or isinstance(value,int):
+            
+            try:
                 values.add(float(value))
-            else:
+            except:
                 values.add(value)
+
             
         pairs = [(feature, j) for j in values]
         all_pairs.extend(pairs)
@@ -77,6 +79,5 @@ def gini(X, y, n_features):
     # Szukamy minimum
     index = min(xrange(len(all_pairs_gini)),key=all_pairs_gini.__getitem__)
                 
-    print "typ gini", type(all_pairs[index][1])
     return (all_pairs[index][0], all_pairs[index][1], all_pairs_gini[index])
         
