@@ -1,9 +1,10 @@
+from collections import defaultdict
 import gini
 import random
 
 class Node:
     def __init__(self, results=None, value=None,tb=None,fb=None,index=None):
-        self.value=value # vlaue necessary to get a true result
+        self.value=value # value necessary to get a true result
         self.results=results # dict of results for a branch, None for everything except endpoints
         self.tb=tb # true decision nodes 
         self.fb=fb # false decision nodes
@@ -37,7 +38,6 @@ def uniquecounts(rows, y):
         cnt+=1
         if r not in results: results[r]=0
         results[r]+=1
-       
     return r  
     
 def fit(X, y):
@@ -72,12 +72,12 @@ def predict(records, trees):
     """
     Classify whole dataset.
     """
-    res_dict = {}
+    res_dict = defaultdict(list)
     for rec_id,record in enumerate(records):
         for tree in trees:
             result = get_classification(record,tree) #classify each record on every tree
             res_dict[rec_id].append(result)
-    
+    print res_dict
     return res_dict        
             
 def get_classification(record, tree):
@@ -85,12 +85,14 @@ def get_classification(record, tree):
     This function recursively traverses the decision tree and returns a
     classification for the given record.
     """
-        
+    print "record", record
     if tree.fb is None and tree.tb is None:
-        return tree.results     
+        print "skonczylem"
+        return tree.results           
     else:
         for i in range(0,len(record)):
-            if record[i] == tree.index:
+            if i == tree.index:
+                #print "biahshdgshj"
                 if isinstance(record[i], float) or isinstance(record[i], int):
                     if float(record[i]) >= float(tree.value):
                         return get_classification(record, tree.tb)
@@ -102,16 +104,17 @@ def get_classification(record, tree):
                     else:
                         return get_classification(record, tree.fb)
                 
-            else: continue
+            else:
+                continue
         
 def read_data_to_learn():
     tabela = []
-    f = open("iris.txt", "r")
+    f = open("gini_dane.txt", "r")
     for i in f:
         tabela.append(i.strip().split("\t"))
     
     y = []
-    g = open("iris_class.txt", "r")
+    g = open("gini_klasyfikacje.txt", "r")
     
     for j in g:
         y.append(j.strip())
@@ -121,13 +124,13 @@ def read_data_to_learn():
 def get_random_lines():
     """
     Draws random lines to from dataset to build single tree.
-    The number of lines must be equal to the number of lines in the input dataset.
+    The number of lines must be equal to the number of lines 
+    in the input dataset.
     Returns X and y.
     """
     
     start_X, start_y = read_data_to_learn()
     numb_lines = len(start_y)
-    print numb_lines
     
     new_X = []
     new_y = []
@@ -140,11 +143,22 @@ def get_random_lines():
     return new_X, new_y
     
 def read_data_to_classify():
-        pass
+    """
+    Reads testset file to classify.
+    """
+    lines = []
+    f = open("gini_testset.txt", "r")
+    for i in f:
+        lines.append(i.strip().split("\t"))
+        
+    return lines
     
 if __name__ == "__main__":
     X,y = get_random_lines()
-    gini_tup = gini.gini(X,y,2)
-    fit(X,y)
+    #gini_tup = gini.gini(X,y,2)
+    tree1 = fit(X,y)
+    tree2 = fit(X,y)
+    records = read_data_to_classify()
+    predict(records, [tree1,tree2])
     
     
