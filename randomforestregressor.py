@@ -7,7 +7,7 @@ import tree
            
 class RandomForestRegressor:
     """
-    Głowna klasa regresji.
+    Glowna klasa regresji.
     """
     def __init__(self, num):
         self.num = num
@@ -22,19 +22,18 @@ class RandomForestRegressor:
         Input:
         X - macierz z przykladami
         y - wektor z decyzjami
-        numtrees - liczba poczartkowych drzew
+        numtrees - liczba poczatkowych drzew
         
-        Uczy regresor na zbiorze treningowym X (y jest wektorem, który dla 
-        każdego wiersza X zawiera klasę, do której należy ten przykład).
+        Uczy regresor na zbiorze treningowym X (y jest wektorem, ktory dla 
+        kazdego wiersza X zawiera klase, do ktorej nalezy ten przyklad).
         
-        Warunkiem zakończenia procesu uczenia nowych drzew  w lesie
-        jest zaobserwowana stabilizacja tzw. błędu out-of-bag (OOB).
+        Warunkiem zakonczenia procesu uczenia nowych drzew  w lesie
+        jest zaobserwowana stabilizacja tzw. bledu out-of-bag (OOB).
         """    
         X_list, y_list = RandomForestRegressor.read_data(X, y) 
         
-        # Błędy
         if len(X_list) != len(y_list):
-                raise ValueError("Pierwszy wymiar X i długość y nie są równe")
+                raise ValueError("Pierwszy wymiar X i dlugosc y nie sa rowne")
                 
         self.xlen = len(X_list[0])
         self.ylen == len(y_list)
@@ -47,16 +46,15 @@ class RandomForestRegressor:
         
     def predict(self, X, isfile=True):
         """
-        Przewiduje najbardziej prawdopodobną klasę dla zadanego 
-        przykladu dla wszystkich dzrew w lesie. 
+        Przewiduje najbardziej prawdopodobna klase dla zadanego 
+        przykladu dla wszystkich drzew w lesie. 
         """
         
-        # Błędy
         if self.trees == None:
-            raise ValueError("Klasyfikator nie został nauczony metodą fit")
+            raise ValueError("Klasyfikator nie zostal nauczony metoda fit")
         
         if self.xlen != len(X[0]):
-            raise ValueError("Nieprawidłowa liczba cech w tabeli X")
+            raise ValueError("Nieprawidlowa liczba cech w tabeli X")
             
         m = []
         
@@ -136,26 +134,24 @@ class RandomForestRegressor:
     def read_data(Xfile, yfile):
         """
         Input:
-        Xfile - plik z przykładami do uczenia
+        Xfile - plik z przykladami do uczenia
         yfile - plik z wektorem decyzji
         
-        Czyta dane podane przez użytkownika w pliku tekstowym.      
+        Czyta dane podane przez uzytkownika w pliku tekstowym.      
         """
         
-        # Pobranie listy przykładów
         X_list = []
         f = open(Xfile, "r")
         for i in f:
             X_list.append(i.strip().split("\t"))
         f.close()
         
-        # Pobieranie klasyfikacji
         y_list = []
         g = open(yfile, "r")
         for j in g:
             try:
                 y_list.append(float(j.strip()))
             except:
-                raise ValueError("Zmienna y zawiera wartości nienumeryczne")
+                raise ValueError("Zmienna y zawiera wartosci nienumeryczne")
         g.close()
         return X_list, y_list

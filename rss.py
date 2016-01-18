@@ -2,12 +2,22 @@
 import random
 
 def rss(X, y, n_features):
+        """
+        Input:
+        X - lista przykladow
+        y - wektor decyzji
+        n_features - liczba cech
+        
+        Dla zadanej tablicy X zawierajacej cechy i ich wartosci, tablicy z klasyfikacjami y
+        oraz liczba cech n_features funkcja zwraca krotke (c, w, g) oznaczajace
+        kolejno indeks cechy, wartosc oraz wskaznik RSS. 
+        """
         if n_features > len(X[0]):
-                raise Exception('Liczba wybranych cech jest większa od liczby cech w zbiorze danych.')
+                raise Exception('Liczba wybranych cech jest wieksza od liczby cech w zbiorze danych.')
 
         selected_features = random.sample(xrange(0, len(X[0])), n_features)  # Losowanie cech
                         
-        all_pairs = [] # Lista zawierająca wszystkie kombinacje (indeks cechy w tabeli, wartość cechy)
+        all_pairs = [] 
         
         for feature in selected_features:
                 values = []
@@ -28,7 +38,6 @@ def rss(X, y, n_features):
             wyR = []
             r=0
             for wiersz in range(0, len(X)):
-                # Dane kategoryczne
                 if type(pair[1]) == str:
                     if X[wiersz][pair[0]] == pair[1]:    
                         wyL.append(y[wiersz])

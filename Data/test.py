@@ -2,4 +2,4 @@
 import randomforestclassifier
 
 klasyfikator = randomforestclassifier.RandomForestClassifier(2)
-kl = klasyfikator.fit("Data\nowe.txt", "Data\nowekl.txt")
+kl = klasyfikator.fit("nowe.txt", "nowekl.txt")

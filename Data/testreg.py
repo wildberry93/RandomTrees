@@ -2,4 +2,4 @@
 import randomforestregressor
 
 klasyfikator = randomforestregressor.RandomForestRegressor(2)
-kl = klasyfikator.fit("Data\forestfires_log.csv", "Data\forestkl.csv")
+kl = klasyfikator.fit("forestfires_log.csv", "forestkl.csv")

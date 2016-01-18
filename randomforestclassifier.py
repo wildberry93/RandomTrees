@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 import collections
 import gini
 import leaf
@@ -8,8 +7,7 @@ import tree
            
 class RandomForestClassifier:
     """
-    Glowna klasa budujaca las losowy.
-    
+    Glowna klasa budujaca las losowy.  
     """
     def __init__(self, num):
         self.num = num
@@ -25,25 +23,23 @@ class RandomForestClassifier:
         X - macierz z przykladami
         y - wektor z decyzjami
         
-        Uczy klasyfikator na zbiorze treningowym X (y jest wektorem, który dla 
-        każdego wiersza X zawiera klasę, do której należy ten przykład).
+        Uczy klasyfikator na zbiorze treningowym X (y jest wektorem, ktory dla 
+        kazdego wiersza X zawiera klase, do ktorej nalezy ten przyklad).
         
-        Warunkiem zakończenia procesu uczenia nowych drzew  w lesie
-        jest zaobserwowana stabilizacja tzw. błędu out-of-bag (OOB).
+        Warunkiem zakonczenia procesu uczenia nowych drzew  w lesie
+        jest zaobserwowana stabilizacja tzw. bledu out-of-bag (OOB).
         """
         
         X_list, y_list = RandomForestClassifier.read_data(X, y)    
    
-         # Błędy
         if len(X_list) != len(y_list):
-                raise ValueError("Pierwszy wymiar X i długosc y nie są rowne")
+                raise ValueError("Pierwszy wymiar X i dlugosc y nie sa rowne")
         if len(set(y_list)) > 2:
                 raise ValueError("Wektor y zawiera wiecej niz 2 klasy")
                 
         self.xlen = len(X_list[0])
         self.ylen == len(y_list)
                     
-        # Tworzenie drzew
         examples_cnt = len(y_list)
         slownik = {}        
         wartosci = []        
@@ -104,7 +100,6 @@ class RandomForestClassifier:
         
         Zwraca klase dla jednego drzewa i jednego przykladu.
         """
-
         if node.isLeaf():
             return node.results
       
@@ -139,17 +134,16 @@ class RandomForestClassifier:
                     
     def predict(self, X, isfile=True):
         """
-        Przewiduje najbardziej prawdopodobną klasę dla zadanego 
+        Przewiduje najbardziej prawdopodobna klase dla zadanego 
         przykladu dla wszystkich dzrew w lesie. 
         Zwraca 1 lub 0.
         """
         
-        # Błędy
         if self.trees == None:
-            raise ValueError("Klasyfikator nie został nauczony metodą fit")
+            raise ValueError("Klasyfikator nie zostal nauczony metoda fit")
         
         if self.xlen != len(X[0]):
-            raise ValueError("Nieprawidłowa liczba cech w tabeli X")
+            raise ValueError("Nieprawidlowa liczba cech w tabeli X")
                  
         m = []
         
@@ -184,16 +178,15 @@ class RandomForestClassifier:
         X - lista przykladow
         isfile - czy uzytkownik podal plik czy juz przeczytane dane?
         
-        Zwraca wektor (rozmiaru m x 1) prawdopodobieństw 
-        przynależności przykładów z X do pierwszej klasy (za pierwszą klasę 
-        rozumiemy tutaj klasę występującą w zbiorze treningowym jako pierwsza) 
+        Zwraca wektor (rozmiaru m x 1) prawdopodobienstw 
+        przynaleznosci przykladow z X do pierwszej klasy (za pierwsza klase 
+        rozumiemy tutaj klase wystepujaca w zbiorze treningowym jako pierwsza) 
         """
-        # Błędy
         if self.trees == None:
-            raise ValueError("Klasyfikator nie został nauczony metodą fit")
+            raise ValueError("Klasyfikator nie zostal nauczony metoda fit")
         
         if self.xlen != len(X[0]):
-            raise ValueError("Nieprawidłowa liczba cech w tabeli X")
+            raise ValueError("Nieprawidlowa liczba cech w tabeli X")
             
         m = []
         
@@ -264,25 +257,20 @@ class RandomForestClassifier:
     def read_data(Xfile, yfile):
         """
         Input:
-        Xfile - plik z przykładami do uczenia
+        Xfile - plik z przykladami do uczenia
         yfile - plik z wektorem decyzji
         
-        Czyta dane podane przez użytkownika w pliku tekstowym.      
+        Czyta dane podane przez uzytkownika w pliku tekstowym.      
         """
-        # Pobranie listy przykładów
         X_list = []
         f = open(Xfile, "r")
         for i in f:
             X_list.append(i.strip().split("\t"))
         f.close()
         
-        # Pobieranie klasyfikacji
         y_list = []
         g = open(yfile, "r")
         for j in g:
             y_list.append(j.strip())
         g.close()
         return X_list, y_list
-    
-
-
