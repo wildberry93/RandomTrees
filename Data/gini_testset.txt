@@ -1,2 +1,0 @@
-trojkat	czerwony	8
-romb	czarny	12

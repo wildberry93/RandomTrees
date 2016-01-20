@@ -1,7 +1,0 @@
-kolo	czerwony	8
-kwadrat	czarny	12
-kwadrat	zielony	5
-romb	zielony	14
-prostokat	czerwony	7
-prostokat	pupruprowy	5
-trojkat	zielony	17
